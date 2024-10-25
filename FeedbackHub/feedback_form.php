@@ -1,49 +1,38 @@
 <?php
-// Enable error reporting to debug issues
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Initialize variables
 $name = $email = $feedback = $rating = "";
 $successMessage = "";
 
-// Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    // Database credentials
     $servername = "localhost";
-    $username = "root"; // Default XAMPP MySQL username
-    $password = ""; // Default XAMPP MySQL password
-    $dbname = "campaign_feedback"; // Ensure this matches your database name
+    $username = "root"; 
+    $password = ""; 
+    $dbname = "campaign_feedback";
 
-    // Create database connection
     $conn = new mysqli($servername, $username, $password, $dbname);
 
-    // Check if the connection was successful
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
 
-    // Capture form data and sanitize inputs
     $name = $conn->real_escape_string($_POST['name']);
     $email = $conn->real_escape_string($_POST['email']);
     $feedback = $conn->real_escape_string($_POST['feedback']);
-    $rating = (int)$_POST['rating']; // Cast rating to integer
+    $rating = (int)$_POST['rating']; 
 
-    // Prepare and bind statement to insert data, including submission_date
     $stmt = $conn->prepare("INSERT INTO feedback (name, email, feedback, rating, submission_date) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)");
     $stmt->bind_param("sssi", $name, $email, $feedback, $rating);
 
-    // Execute the statement and check for success
     if ($stmt->execute()) {
         $successMessage = "Feedback submitted successfully!";
-        // Clear the form by resetting the values
         $name = $email = $feedback = $rating = "";
     } else {
         $successMessage = "Error: " . $stmt->error;
     }
 
-    // Close connections
     $stmt->close();
     $conn->close();
 }
@@ -55,14 +44,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CampaignPulse Feedback Form</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="container">
         <h2 class="text-center mt-5">Submit Your Feedback</h2>
 
-        <!-- Display success message if feedback is submitted -->
         <?php if (!empty($successMessage)): ?>
             <div class="alert alert-success" role="alert">
                 <?php echo $successMessage; ?>
@@ -101,7 +88,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </form>
     </div>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
