@@ -1,23 +1,18 @@
 <?php
-// Database credentials
 $servername = "localhost";
-$username = "root"; // default XAMPP MySQL username is "root"
-$password = ""; // default XAMPP MySQL password is blank
-$dbname = "campaign_feedback"; // ensure this matches the database name
+$username = "root"; 
+$password = "";
+$dbname = "campaign_feedback"; 
 
-// Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Fetch data from feedback table
 $sql = "SELECT name, email, feedback, rating, submission_date FROM feedback ORDER BY submission_date DESC";
 $result = $conn->query($sql);
 
-// Display the data in an HTML table
 if ($result->num_rows > 0) {
     echo "Data exists.";
     echo "<table border='1' cellpadding='10'>";
@@ -36,7 +31,6 @@ if ($result->num_rows > 0) {
     echo "No feedback available.";
 }
 
-// Close connection
 $conn->close();
 
 error_reporting(E_ALL);
